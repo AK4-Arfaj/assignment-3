@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize search functionality
     initializeProjectSearch();
     initializeBooksSearch();
+    initializeBooksSort();
     
     // Initialize book loading state immediately
     initializeBookLoadingState();
@@ -751,6 +752,47 @@ function initializeBooksSearch() {
             this.dispatchEvent(new Event('input'));
             this.blur();
         }
+    });
+}
+
+// Sort Books Functionality
+function initializeBooksSort() {
+    const sortSelect = document.getElementById('book-sort');
+    const booksGrid = document.getElementById('books-grid');
+    
+    if (!sortSelect || !booksGrid) return;
+    
+    sortSelect.addEventListener('change', function() {
+        const sortType = this.value;
+        const books = Array.from(booksGrid.querySelectorAll('.book-column'));
+        
+        // Sort books based on selection
+        books.sort((a, b) => {
+            if (sortType === 'title') {
+                const titleA = a.querySelector('h3').textContent.toLowerCase();
+                const titleB = b.querySelector('h3').textContent.toLowerCase();
+                return titleA.localeCompare(titleB);
+            } else if (sortType === 'date') {
+                // Newest first
+                const yearA = parseInt(a.getAttribute('data-year')) || 0;
+                const yearB = parseInt(b.getAttribute('data-year')) || 0;
+                return yearB - yearA;
+            } else if (sortType === 'date-old') {
+                // Oldest first
+                const yearA = parseInt(a.getAttribute('data-year')) || 0;
+                const yearB = parseInt(b.getAttribute('data-year')) || 0;
+                return yearA - yearB;
+            } else if (sortType === 'author') {
+                const authorA = a.querySelector('.author').textContent.replace('by ', '').trim().toLowerCase();
+                const authorB = b.querySelector('.author').textContent.replace('by ', '').trim().toLowerCase();
+                return authorA.localeCompare(authorB);
+            }
+        });
+        
+        // Re-append sorted books to grid
+        books.forEach(book => {
+            booksGrid.appendChild(book);
+        });
     });
 }
 

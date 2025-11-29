@@ -237,112 +237,135 @@
             <input type="text" id="book-search" placeholder="Search books..." autocomplete="off">
             <span class="search-icon">🔍</span>
         </div>
+        
+        <!-- Sort Options -->
+        <div class="sort-container">
+            <label for="book-sort">Sort by:</label>
+            <select id="book-sort">
+                <option value="title">Title (A-Z)</option>
+                <option value="date">Release Date (Newest)</option>
+                <option value="date-old">Release Date (Oldest)</option>
+                <option value="author">Author (A-Z)</option>
+            </select>
+        </div>
+        
         <div class="center-horizontal">
             <div id="books-grid">
-                <div class="book-column" data-keywords="harry potter sorcerer stone philosopher jk rowling fantasy magic wizard hogwarts" data-isbn="9780439708180" data-book-id="hp1">
+                <div class="book-column" data-keywords="harry potter sorcerer stone philosopher jk rowling fantasy magic wizard hogwarts" data-isbn="9780439708180" data-book-id="hp1" data-year="1998">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='250'%3E%3C/svg%3E" alt="" class="book-cover loading">
                     <h3 class="skeleton title">Harry Potter and the Sorcerer's Stone</h3>
                     <p class="author skeleton author">by J.K. Rowling</p>
+                    <p class="release-year">1998</p>
                     <p class="skeleton description">The magical journey begins as Harry discovers he's a wizard and enters Hogwarts School of Witchcraft and Wizardry.</p>
                     <button class="tbr-btn" data-book-id="hp1">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                                                                <div class="book-column" data-keywords="harry potter chamber secrets jk rowling fantasy magic wizard hogwarts" data-isbn="9780439064873" data-book-id="hp2">
+                                                                <div class="book-column" data-keywords="harry potter chamber secrets jk rowling fantasy magic wizard hogwarts" data-isbn="9780439064873" data-book-id="hp2" data-year="1999">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='250'%3E%3C/svg%3E" alt="" class="book-cover loading">
                     <h3 class="skeleton title">Harry Potter and the Chamber of Secrets</h3>
                     <p class="author skeleton author">by J.K. Rowling</p>
+                    <p class="release-year">1999</p>
                     <p class="skeleton description">Harry returns to Hogwarts to face the mystery of the Chamber of Secrets and the monster within.</p>
                     <button class="tbr-btn" data-book-id="hp2">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="harry potter prisoner azkaban jk rowling fantasy magic wizard hogwarts sirius" data-isbn="9780439136365" data-book-id="hp3">
+                <div class="book-column" data-keywords="harry potter prisoner azkaban jk rowling fantasy magic wizard hogwarts sirius" data-isbn="9780439136365" data-book-id="hp3" data-year="1999">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='250'%3E%3C/svg%3E" alt="" class="book-cover loading">
                     <h3 class="skeleton title">Harry Potter and the Prisoner of Azkaban</h3>
                     <p class="author skeleton author">by J.K. Rowling</p>
+                    <p class="release-year">1999</p>
                     <p class="skeleton description">Harry's third year at Hogwarts brings new dangers as an escaped prisoner threatens his safety.</p>
                     <button class="tbr-btn" data-book-id="hp3">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="harry potter prisoner azkaban jk rowling fantasy magic wizard hogwarts sirius" data-isbn="9780439136365" data-book-id="hp3">
+                <div class="book-column" data-keywords="harry potter prisoner azkaban jk rowling fantasy magic wizard hogwarts sirius" data-isbn="9780439136365" data-book-id="hp3" data-year="1999">
                     <img src="assets/images/placeholder-book.jpg" alt="Harry Potter and the Prisoner of Azkaban" class="book-cover">
                     <h3>Harry Potter and the Prisoner of Azkaban</h3>
                     <p class="author">by J.K. Rowling</p>
+                    <p class="release-year">1999</p>
                     <p>Harry learns about his past while a dangerous prisoner escapes from the wizarding prison of Azkaban.</p>
                     <button class="tbr-btn" data-book-id="hp3">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="harry potter goblet fire jk rowling fantasy magic wizard hogwarts tournament" data-isbn="9780439139601" data-book-id="hp4">
+                <div class="book-column" data-keywords="harry potter goblet fire jk rowling fantasy magic wizard hogwarts tournament" data-isbn="9780439139601" data-book-id="hp4" data-year="2000">
                     <img src="assets/images/placeholder-book.jpg" alt="Harry Potter and the Goblet of Fire" class="book-cover">
                     <h3>Harry Potter and the Goblet of Fire</h3>
                     <p class="author">by J.K. Rowling</p>
+                    <p class="release-year">2000</p>
                     <p>Harry competes in the dangerous Triwizard Tournament while Voldemort's return grows stronger.</p>
                     <button class="tbr-btn" data-book-id="hp4">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="harry potter order phoenix jk rowling fantasy magic wizard hogwarts ministry" data-isbn="9780439358071" data-book-id="hp5">
+                <div class="book-column" data-keywords="harry potter order phoenix jk rowling fantasy magic wizard hogwarts ministry" data-isbn="9780439358071" data-book-id="hp5" data-year="2003">
                     <img src="assets/images/placeholder-book.jpg" alt="Harry Potter and the Order of the Phoenix" class="book-cover">
                     <h3>Harry Potter and the Order of the Phoenix</h3>
                     <p class="author">by J.K. Rowling</p>
+                    <p class="release-year">2003</p>
                     <p>Harry faces disbelief about Voldemort's return while forming Dumbledore's Army to fight against darkness.</p>
                     <button class="tbr-btn" data-book-id="hp5">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="harry potter half blood prince jk rowling fantasy magic wizard hogwarts horcrux" data-isbn="9780439785969" data-book-id="hp6">
+                <div class="book-column" data-keywords="harry potter half blood prince jk rowling fantasy magic wizard hogwarts horcrux" data-isbn="9780439785969" data-book-id="hp6" data-year="2005">
                     <img src="assets/images/placeholder-book.jpg" alt="Harry Potter and the Half-Blood Prince" class="book-cover">
                     <h3>Harry Potter and the Half-Blood Prince</h3>
                     <p class="author">by J.K. Rowling</p>
+                    <p class="release-year">2005</p>
                     <p>Harry learns about Voldemort's past through memories while discovering the secret to defeating him.</p>
                     <button class="tbr-btn" data-book-id="hp6">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="harry potter deathly hallows jk rowling fantasy magic wizard hogwarts horcrux voldemort" data-isbn="9780545010221" data-book-id="hp7">
+                <div class="book-column" data-keywords="harry potter deathly hallows jk rowling fantasy magic wizard hogwarts horcrux voldemort" data-isbn="9780545010221" data-book-id="hp7" data-year="2007">
                     <img src="assets/images/placeholder-book.jpg" alt="Harry Potter and the Deathly Hallows" class="book-cover">
                     <h3>Harry Potter and the Deathly Hallows</h3>
                     <p class="author">by J.K. Rowling</p>
+                    <p class="release-year">2007</p>
                     <p>The epic conclusion as Harry, Ron, and Hermione search for Horcruxes to defeat Voldemort once and for all.</p>
                     <button class="tbr-btn" data-book-id="hp7">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="hidden potential adam grant psychology potential talent growth mindset development" data-isbn="9780593653142" data-title="Hidden Potential" data-author="Adam Grant" data-book-id="hidden-potential">
+                <div class="book-column" data-keywords="hidden potential adam grant psychology potential talent growth mindset development" data-isbn="9780593653142" data-title="Hidden Potential" data-author="Adam Grant" data-book-id="hidden-potential" data-year="2023">
                     <img src="assets/images/placeholder-book.jpg" alt="Hidden Potential" class="book-cover">
                     <h3>Hidden Potential</h3>
                     <p class="author">by Adam Grant</p>
+                    <p class="release-year">2023</p>
                     <p>Explores how to unlock untapped potential in ourselves and others, challenging myths about talent and ability.</p>
                     <button class="tbr-btn" data-book-id="hidden-potential">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="outliers malcolm gladwell success psychology 10000 hours practice talent" data-isbn="9780316017930" data-title="Outliers: The Story of Success" data-author="Malcolm Gladwell" data-book-id="outliers">
+                <div class="book-column" data-keywords="outliers malcolm gladwell success psychology 10000 hours practice talent" data-isbn="9780316017930" data-title="Outliers: The Story of Success" data-author="Malcolm Gladwell" data-book-id="outliers" data-year="2008">
                     <img src="assets/images/placeholder-book.jpg" alt="Outliers" class="book-cover">
                     <h3>Outliers</h3>
                     <p class="author">by Malcolm Gladwell</p>
+                    <p class="release-year">2008</p>
                     <p>Examines the factors that contribute to high levels of success, revealing the hidden advantages behind extraordinary achievement.</p>
                     <button class="tbr-btn" data-book-id="outliers">
                         <span class="tbr-text">Add to TBR</span>
                         <span class="tbr-icon">✓</span>
                     </button>
                 </div>
-                <div class="book-column" data-keywords="digital minimalism cal newport technology focus social media distraction productivity" data-isbn="9780525536512" data-title="Digital Minimalism: Choosing a Focused Life in a Noisy World" data-author="Cal Newport" data-book-id="digital-minimalism">
+                <div class="book-column" data-keywords="digital minimalism cal newport technology focus social media distraction productivity" data-isbn="9780525536512" data-title="Digital Minimalism: Choosing a Focused Life in a Noisy World" data-author="Cal Newport" data-book-id="digital-minimalism" data-year="2019">
                     <img src="assets/images/placeholder-book.jpg" alt="Digital Minimalism" class="book-cover">
                     <h3>Digital Minimalism</h3>
                     <p class="author">by Cal Newport</p>
+                    <p class="release-year">2019</p>
                     <p>A philosophy for living better with technology by being more selective about digital tools and reducing digital clutter.</p>
                     <button class="tbr-btn" data-book-id="digital-minimalism">
                         <span class="tbr-text">Add to TBR</span>

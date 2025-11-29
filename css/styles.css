@@ -503,6 +503,65 @@ body.dark-mode .search-icon {
     color: #00d4ff;
 }
 
+/* Sort Container Styles */
+.sort-container {
+    max-width: 400px;
+    margin: 1.5rem auto 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.sort-container label {
+    font-weight: 600;
+    color: rgb(63, 63, 206);
+    font-size: 0.95rem;
+}
+
+.sort-container select {
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    border: 2px solid rgb(200, 200, 200);
+    border-radius: 6px;
+    background-color: white;
+    color: rgb(60, 60, 60);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.sort-container select:hover {
+    border-color: rgb(63, 63, 206);
+    box-shadow: 0 0 8px rgba(63, 63, 206, 0.15);
+}
+
+.sort-container select:focus {
+    outline: none;
+    border-color: rgb(63, 63, 206);
+    box-shadow: 0 0 10px rgba(63, 63, 206, 0.2);
+}
+
+body.dark-mode .sort-container label {
+    color: #a0d4ff;
+}
+
+body.dark-mode .sort-container select {
+    background-color: #0a1330;
+    color: #f1f5ff;
+    border-color: #27336d;
+}
+
+body.dark-mode .sort-container select:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.15);
+}
+
+body.dark-mode .sort-container select:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
 /* #projects-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -754,6 +813,17 @@ body.dark-mode .book-column img.loading {
     font-weight: 500;
 }
 
+.book-column .release-year {
+    font-size: 0.85rem;
+    color: rgb(120, 120, 120);
+    margin: 0.5rem 0 0.75rem 0;
+    font-weight: 600;
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background: rgba(63, 63, 206, 0.1);
+    border-radius: 12px;
+}
+
 .book-column p:not(.author) {
     font-size: 0.9rem;
     line-height: 1.4;
@@ -844,6 +914,11 @@ body.dark-mode .book-column h3 {
 
 body.dark-mode .book-column .author {
     color: #00d4ff;
+}
+
+body.dark-mode .book-column .release-year {
+    background: rgba(100, 200, 255, 0.2);
+    color: #a0d4ff;
 }
 
 body.dark-mode .book-column p:not(.author) {
