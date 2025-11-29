@@ -7,8 +7,80 @@
     <link rel = "stylesheet" href = "css/styles.css">
 </head>
 <body>
-    <nav><a href="#about-me">About Me</a> <a href="#interests">Interests</a> <a href="#skills">Skills</a> <a href="#projects">Projects</a> <a href="#books">Books</a> <a href="#contact">Contact</a></nav>
+    <nav>
+        <div id="nav-links">
+            <a href="#about-me">About Me</a> <a href="#interests">Interests</a> <a href="#skills">Skills</a> <a href="#projects">Projects</a> <a href="#books">Books</a> <a href="#contact">Contact</a>
+        </div>
+        <div id="nav-auth">
+            <a href="#" id="nav-login-btn" class="nav-auth-btn">Login</a>
+            <a href="#" id="nav-signup-btn" class="nav-auth-btn">Signup</a>
+            <span id="nav-user" style="display:none;">
+                <span id="nav-username"></span>
+                <span id="nav-user-age" class="nav-user-age"></span>
+                <a href="#" id="nav-logout-btn">Logout</a>
+            </span>
+        </div>
+    </nav>
     <main>
+    <!-- Auth Modals -->
+    <div id="auth-overlay" class="auth-overlay" style="display:none;"></div>
+    
+    <!-- Login Modal -->
+    <div id="login-modal" class="auth-modal" style="display:none;">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="login-close">&times;</button>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="auth-form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" required>
+                    <span class="auth-error" id="login-email-error"></span>
+                </div>
+                <div class="auth-form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required>
+                    <span class="auth-error" id="login-password-error"></span>
+                </div>
+                <span class="auth-error" id="login-general-error"></span>
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+            <p style="text-align:center; margin-top:1rem;">Don't have an account? <a href="#" id="switch-to-signup" class="auth-link">Signup here</a></p>
+        </div>
+    </div>
+    
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="auth-modal" style="display:none;">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="signup-close">&times;</button>
+            <h2>Signup</h2>
+            <form id="signup-form">
+                <div class="auth-form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" name="username" required>
+                    <span class="auth-error" id="signup-username-error"></span>
+                </div>
+                <div class="auth-form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" name="email" required>
+                    <span class="auth-error" id="signup-email-error"></span>
+                </div>
+                <div class="auth-form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" name="password" required>
+                    <span class="auth-error" id="signup-password-error"></span>
+                </div>
+                <div class="auth-form-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" name="confirm" required>
+                    <span class="auth-error" id="signup-confirm-error"></span>
+                </div>
+                <span class="auth-error" id="signup-general-error"></span>
+                <button type="submit" class="auth-btn">Signup</button>
+            </form>
+            <p style="text-align:center; margin-top:1rem;">Already have an account? <a href="#" id="switch-to-login" class="auth-link">Login here</a></p>
+        </div>
+    </div>
+    
     <!-- Real-time Clock Section -->
     <section id="clock-section">
         <div id="clock-container">
@@ -118,6 +190,20 @@
                 <span>Word</span>
             </div>
         </div>
+    </section>
+
+    <!-- GitHub Activity Section -->
+    <section id="github-activity">
+        <h1>GitHub Activity</h1>
+        <div class="github-container center-horizontal">
+            <div id="github-heatmap" class="github-heatmap" aria-label="GitHub contribution heatmap"></div>
+            <div id="github-legend" class="github-legend"></div>
+        </div>
+        <div class="center-horizontal">
+            <h2 style="margin-top:1rem;">Public Repositories</h2>
+        </div>
+        <div id="github-repos" class="repos-grid"></div>
+        <div id="github-error" class="form-status" style="display:none; margin-top:1rem;"></div>
     </section>
 
     <section id = "projects">

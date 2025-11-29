@@ -112,6 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
     startTypingEffect(); // Start initial typing effect
     setInterval(updateClock, 1000); // Check for updates every second
     
+    // Initialize auth system (check session on page load)
+    initializeAuthSystem();
+    
     // Initialize search functionality
     initializeProjectSearch();
     initializeBooksSearch();
@@ -130,7 +133,475 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize TBR (To Be Read) system
     initializeTBRSystem();
+
+    // Initialize GitHub activity section
+    initializeGitHubSection();
 });
+
+// ============ AUTH SYSTEM ============
+
+const AUTH_STORAGE_KEY = 'user-session';
+const USERS_STORAGE_KEY = 'app-users';
+
+// Initialize auth system
+function initializeAuthSystem() {
+    setupAuthEventListeners();
+    restoreSession();
+}
+
+// Check and restore session from localStorage
+function restoreSession() {
+    const session = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (session) {
+        try {
+            const user = JSON.parse(session);
+            setUserLoggedIn(user);
+        } catch (e) {
+            console.log('Invalid session data');
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+        }
+    }
+}
+
+// Setup all auth event listeners
+function setupAuthEventListeners() {
+    // Login modal
+    document.getElementById('login-close')?.addEventListener('click', closeLoginModal);
+    document.getElementById('login-form')?.addEventListener('submit', handleLogin);
+    document.getElementById('nav-login-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openLoginModal();
+    });
+    
+    // Signup modal
+    document.getElementById('signup-close')?.addEventListener('click', closeSignupModal);
+    document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
+    document.getElementById('nav-signup-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openSignupModal();
+    });
+    
+    // Modal switching
+    document.getElementById('switch-to-signup')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeLoginModal();
+        openSignupModal();
+    });
+    
+    document.getElementById('switch-to-login')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeSignupModal();
+        openLoginModal();
+    });
+    
+    // Overlay close
+    document.getElementById('auth-overlay')?.addEventListener('click', closeAuthModals);
+    
+    // Logout
+    document.getElementById('nav-logout-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleLogout();
+    });
+}
+
+// Modal open/close functions
+function openLoginModal() {
+    const overlay = document.getElementById('auth-overlay');
+    const modal = document.getElementById('login-modal');
+    overlay.style.display = 'block';
+    modal.style.display = 'block';
+    setTimeout(() => {
+        overlay.classList.add('show');
+        modal.classList.add('show');
+    }, 10);
+}
+
+function closeLoginModal() {
+    closeAuthModals();
+}
+
+function openSignupModal() {
+    const overlay = document.getElementById('auth-overlay');
+    const modal = document.getElementById('signup-modal');
+    overlay.style.display = 'block';
+    modal.style.display = 'block';
+    setTimeout(() => {
+        overlay.classList.add('show');
+        modal.classList.add('show');
+    }, 10);
+}
+
+function closeSignupModal() {
+    closeAuthModals();
+}
+
+function closeAuthModals() {
+    const overlay = document.getElementById('auth-overlay');
+    const loginModal = document.getElementById('login-modal');
+    const signupModal = document.getElementById('signup-modal');
+    
+    overlay.classList.remove('show');
+    loginModal.classList.remove('show');
+    signupModal.classList.remove('show');
+    
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        loginModal.style.display = 'none';
+        signupModal.style.display = 'none';
+        clearFormErrors();
+    }, 300);
+}
+
+// Handle login form submission
+function handleLogin(e) {
+    e.preventDefault();
+    clearFormErrors('login');
+    
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    
+    // Validation
+    const emailError = validateEmail(email);
+    if (emailError) {
+        showError('login-email-error', emailError);
+        return;
+    }
+    
+    if (!password || password.length < 6) {
+        showError('login-password-error', 'Password must be at least 6 characters');
+        return;
+    }
+    
+    // Get users from storage
+    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+    const user = users.find(u => u.email === email);
+    
+    if (!user) {
+        showError('login-general-error', 'Email not found. Please signup first.');
+        return;
+    }
+    
+    // Simple password check (in production, use proper hashing)
+    if (user.password !== password) {
+        showError('login-general-error', 'Incorrect password');
+        return;
+    }
+    
+    // Login successful
+    setUserLoggedIn(user);
+    closeLoginModal();
+    showToast('success', 'Welcome back!', `Logged in as ${user.username}`);
+}
+
+// Handle signup form submission
+function handleSignup(e) {
+    e.preventDefault();
+    clearFormErrors('signup');
+    
+    const username = document.getElementById('signup-username').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('signup-confirm').value;
+    
+    // Validation
+    if (!username || username.length < 3) {
+        showError('signup-username-error', 'Username must be at least 3 characters');
+        return;
+    }
+    
+    const emailError = validateEmail(email);
+    if (emailError) {
+        showError('signup-email-error', emailError);
+        return;
+    }
+    
+    if (!password || password.length < 6) {
+        showError('signup-password-error', 'Password must be at least 6 characters');
+        return;
+    }
+    
+    if (password !== confirm) {
+        showError('signup-confirm-error', 'Passwords do not match');
+        return;
+    }
+    
+    // Check if email already exists
+    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+    if (users.some(u => u.email === email)) {
+        showError('signup-email-error', 'Email already registered');
+        return;
+    }
+    
+    if (users.some(u => u.username === username)) {
+        showError('signup-username-error', 'Username already taken');
+        return;
+    }
+    
+    // Create new user
+    const newUser = { username, email, password, createdAt: new Date().toISOString() };
+    users.push(newUser);
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    
+    // Auto-login
+    setUserLoggedIn(newUser);
+    closeSignupModal();
+    showToast('success', 'Signup successful!', `Welcome, ${username}!`);
+}
+
+// Calculate user age from creation timestamp
+function calculateUserAge(createdAtISO) {
+    const createdAt = new Date(createdAtISO);
+    const now = new Date();
+    const diffMs = now - createdAt;
+    
+    const secs = Math.floor(diffMs / 1000);
+    const mins = Math.floor(diffMs / (1000 * 60));
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const months = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 30.44));
+    const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
+    
+    if (years >= 1) {
+        return { value: years, unit: 'year' + (years !== 1 ? 's' : '') };
+    } else if (months >= 1) {
+        return { value: months, unit: 'month' + (months !== 1 ? 's' : '') };
+    } else if (days >= 1) {
+        return { value: days, unit: 'day' + (days !== 1 ? 's' : '') };
+    } else if (hours >= 1) {
+        return { value: hours, unit: 'hour' + (hours !== 1 ? 's' : '') };
+    } else if (mins >= 1) {
+        return { value: mins, unit: 'min' + (mins !== 1 ? 's' : '') };
+    } else {
+        return { value: Math.max(0, secs), unit: 'sec' + (secs !== 1 ? 's' : '') };
+    }
+}
+
+// Update the user age display element
+function updateUserAgeDisplay(user) {
+    const ageElement = document.getElementById('nav-user-age');
+    if (!ageElement) return;
+    
+    const age = calculateUserAge(user.createdAt);
+    ageElement.textContent = `User for: ${age.value} ${age.unit}`;
+}
+
+// Set user as logged in
+function setUserLoggedIn(user) {
+    // Save session
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+    
+    // Update UI
+    document.getElementById('nav-login-btn').style.display = 'none';
+    document.getElementById('nav-signup-btn').style.display = 'none';
+    document.getElementById('nav-user').style.display = 'flex';
+    document.getElementById('nav-username').textContent = user.username;
+    
+    // Update user age display
+    updateUserAgeDisplay(user);
+    
+    // Set up interval to update age display every second
+    if (window.userAgeInterval) clearInterval(window.userAgeInterval);
+    window.userAgeInterval = setInterval(() => {
+        updateUserAgeDisplay(user);
+    }, 1000);
+}
+
+// Handle logout
+function handleLogout() {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    
+    // Clear age update interval
+    if (window.userAgeInterval) {
+        clearInterval(window.userAgeInterval);
+        window.userAgeInterval = null;
+    }
+    
+    // Reset UI
+    document.getElementById('nav-login-btn').style.display = 'inline-block';
+    document.getElementById('nav-signup-btn').style.display = 'inline-block';
+    document.getElementById('nav-user').style.display = 'none';
+    
+    showToast('info', 'Logged out', 'See you later!');
+}
+
+// Utility: Validate email
+function validateEmail(email) {
+    if (!email) return 'Email is required';
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(email)) return 'Please enter a valid email address';
+    return null;
+}
+
+// Utility: Show error
+function showError(elementId, message) {
+    const el = document.getElementById(elementId);
+    if (el) {
+        el.textContent = message;
+    }
+}
+
+// Utility: Clear form errors
+function clearFormErrors(form = null) {
+    const selector = form ? `#${form}-form .auth-error` : '.auth-error';
+    document.querySelectorAll(selector).forEach(el => el.textContent = '');
+}
+
+// GitHub Activity: fetch public repos and recent events to render a simple heatmap
+function initializeGitHubSection() {
+    const username = 'AK4-Arfaj';
+    const reposContainer = document.getElementById('github-repos');
+    const heatmapContainer = document.getElementById('github-heatmap');
+    const legendContainer = document.getElementById('github-legend');
+    const errorContainer = document.getElementById('github-error');
+
+    if (!reposContainer || !heatmapContainer || !legendContainer) return;
+
+    // Utility: color scale based on count
+    function colorForCount(count) {
+        if (!count || count === 0) return '#ebedf0';
+        if (count === 1) return '#9be9a8';
+        if (count <= 3) return '#40c463';
+        if (count <= 6) return '#30a14e';
+        return '#216e39';
+    }
+
+    // Render legend
+    function renderLegend() {
+        legendContainer.innerHTML = '';
+        const label = document.createElement('div');
+        label.textContent = 'Less';
+        label.style.marginRight = '8px';
+        legendContainer.appendChild(label);
+        [0,1,2,4,7].forEach(v => {
+            const box = document.createElement('div');
+            box.style.width = '14px';
+            box.style.height = '14px';
+            box.style.borderRadius = '3px';
+            box.style.background = colorForCount(v);
+            legendContainer.appendChild(box);
+        });
+        const more = document.createElement('div');
+        more.textContent = 'More';
+        more.style.marginLeft = '8px';
+        legendContainer.appendChild(more);
+    }
+
+    // Fetch public repositories
+    fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`)
+        .then(r => {
+            if (!r.ok) throw new Error(`Repos fetch failed: ${r.status}`);
+            return r.json();
+        })
+        .then(repos => {
+            reposContainer.innerHTML = '';
+            // Sort repos by stargazers_count desc then updated
+            repos.sort((a,b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.updated_at) - new Date(a.updated_at)));
+            repos.forEach(repo => {
+                const card = document.createElement('a');
+                card.href = repo.html_url;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+                card.className = 'repo-card';
+                
+                const title = document.createElement('h3');
+                title.textContent = repo.name;
+                card.appendChild(title);
+
+                if (repo.description) {
+                    const desc = document.createElement('p');
+                    desc.textContent = repo.description;
+                    desc.style.margin = '0.25rem 0';
+                    desc.style.color = 'rgb(80,80,80)';
+                    card.appendChild(desc);
+                }
+
+                const meta = document.createElement('div');
+                meta.className = 'repo-meta';
+                const lang = document.createElement('span');
+                lang.textContent = repo.language || '';
+                const stars = document.createElement('span');
+                stars.textContent = `★ ${repo.stargazers_count}`;
+                const forks = document.createElement('span');
+                forks.textContent = `⑂ ${repo.forks_count}`;
+                meta.appendChild(lang);
+                meta.appendChild(stars);
+                meta.appendChild(forks);
+                card.appendChild(meta);
+
+                reposContainer.appendChild(card);
+            });
+        })
+        .catch(err => {
+            console.log('Error fetching repos', err);
+            if (errorContainer) {
+                errorContainer.style.display = 'block';
+                errorContainer.textContent = 'Unable to load GitHub repositories.';
+            }
+        });
+
+    // Fetch recent public events and build a heatmap for the last 90 days
+    fetch(`https://api.github.com/users/${username}/events/public?per_page=100`)
+        .then(r => {
+            if (!r.ok) throw new Error(`Events fetch failed: ${r.status}`);
+            return r.json();
+        })
+        .then(events => {
+            // Create a map dateString -> count
+            const counts = {};
+            events.forEach(evt => {
+                const d = new Date(evt.created_at);
+                const key = d.toISOString().slice(0,10);
+                counts[key] = (counts[key] || 0) + 1;
+            });
+
+            // Build an array of last 90 days
+            const DAYS = 90;
+            const days = [];
+            const today = new Date();
+            for (let i = DAYS-1; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                days.push(d);
+            }
+
+            // Convert into weeks (columns). We want weeks columns where each column has 7 days (Sun-Sat)
+            // Find the start date aligned to Sunday before first day
+            const first = days[0];
+            const start = new Date(first);
+            start.setDate(first.getDate() - first.getDay());
+            const totalDays = Math.ceil((today - start)/(1000*60*60*24)) + 1;
+            const weeks = Math.ceil(totalDays / 7);
+
+            // Build a grid of weeks
+            heatmapContainer.innerHTML = '';
+            for (let w = 0; w < weeks; w++) {
+                const col = document.createElement('div');
+                col.className = 'heat-week';
+                for (let dow = 0; dow < 7; dow++) {
+                    const cellDate = new Date(start);
+                    cellDate.setDate(start.getDate() + w*7 + dow);
+                    const iso = cellDate.toISOString().slice(0,10);
+                    const count = counts[iso] || 0;
+                    const cell = document.createElement('div');
+                    cell.className = 'heat-day';
+                    cell.title = `${iso}: ${count} event${count !== 1 ? 's':''}`;
+                    cell.style.background = colorForCount(count);
+                    col.appendChild(cell);
+                }
+                heatmapContainer.appendChild(col);
+            }
+
+            renderLegend();
+        })
+        .catch(err => {
+            console.log('Error fetching events', err);
+            if (errorContainer) {
+                errorContainer.style.display = 'block';
+                errorContainer.textContent = 'Unable to load GitHub activity heatmap.';
+            }
+            renderLegend();
+        });
+}
 
 // Live Search Functionality for Projects
 function initializeProjectSearch() {
