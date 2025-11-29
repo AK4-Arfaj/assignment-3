@@ -155,12 +155,33 @@ function restoreSession() {
     if (session) {
         try {
             const user = JSON.parse(session);
-            setUserLoggedIn(user);
+            restoreUserSession(user);
         } catch (e) {
             console.log('Invalid session data');
             localStorage.removeItem(AUTH_STORAGE_KEY);
         }
     }
+}
+
+// Restore user session without showing welcome message
+function restoreUserSession(user) {
+    // Save session
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+    
+    // Update UI
+    document.getElementById('nav-login-btn').style.display = 'none';
+    document.getElementById('nav-signup-btn').style.display = 'none';
+    document.getElementById('nav-user').style.display = 'flex';
+    document.getElementById('nav-username').textContent = user.username;
+    
+    // Update user age display
+    updateUserAgeDisplay(user);
+    
+    // Set up interval to update age display every second
+    if (window.userAgeInterval) clearInterval(window.userAgeInterval);
+    window.userAgeInterval = setInterval(() => {
+        updateUserAgeDisplay(user);
+    }, 1000);
 }
 
 // Setup all auth event listeners
@@ -288,7 +309,7 @@ function handleLogin(e) {
     }
     
     // Login successful
-    setUserLoggedIn(user);
+    setUserLoggedIn(user, false);
     closeLoginModal();
     showToast('success', 'Welcome back!', `Logged in as ${user.username}`);
 }
@@ -343,7 +364,7 @@ function handleSignup(e) {
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
     
     // Auto-login
-    setUserLoggedIn(newUser);
+    setUserLoggedIn(newUser, true);
     closeSignupModal();
     showToast('success', 'Signup successful!', `Welcome, ${username}!`);
 }
@@ -386,7 +407,7 @@ function updateUserAgeDisplay(user) {
 }
 
 // Set user as logged in
-function setUserLoggedIn(user) {
+function setUserLoggedIn(user, isNewUser = false) {
     // Save session
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
     
@@ -395,6 +416,17 @@ function setUserLoggedIn(user) {
     document.getElementById('nav-signup-btn').style.display = 'none';
     document.getElementById('nav-user').style.display = 'flex';
     document.getElementById('nav-username').textContent = user.username;
+    
+    // Display welcome message
+    const welcomeBanner = document.getElementById('welcome-banner');
+    const greeting = isNewUser ? 'Welcome' : 'Welcome Back';
+    welcomeBanner.innerHTML = `${greeting}, <span>${user.username}</span>!`;
+    welcomeBanner.style.display = 'block';
+    
+    // Auto-hide welcome message after 5 seconds
+    setTimeout(() => {
+        welcomeBanner.style.display = 'none';
+    }, 5000);
     
     // Update user age display
     updateUserAgeDisplay(user);

@@ -1719,3 +1719,41 @@ body.dark-mode .nav-user-age {
 body.dark-mode .nav-user-age:hover {
     background: rgba(100, 200, 255, 0.3);
 }
+
+/* Welcome Banner */
+#welcome-banner {
+    background: linear-gradient(135deg, rgba(63, 63, 206, 0.1), rgba(100, 200, 255, 0.1));
+    border-bottom: 2px solid rgba(63, 63, 206, 0.3);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(63, 63, 206);
+    animation: slideDown 0.5s ease-out;
+}
+
+#welcome-banner span {
+    color: rgb(100, 200, 255);
+    font-weight: 700;
+}
+
+body.dark-mode #welcome-banner {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.15), rgba(100, 200, 255, 0.1));
+    border-bottom-color: rgba(100, 200, 255, 0.2);
+    color: #a0d4ff;
+}
+
+body.dark-mode #welcome-banner span {
+    color: #64c8ff;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
